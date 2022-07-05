@@ -1,37 +1,30 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-  KeyboardAvoidingView, StyleSheet, Text, View,
-  TextInput, TouchableOpacity, Keyboard,
-  ScrollView, Alert, FlatList, Dimensions,
+  StyleSheet, Text, View,
+  TouchableOpacity, 
+  Alert, FlatList, 
 } from 'react-native';
 import { List } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
-import { addnote, deletenote } from '../reducer/noteApp';
+import { deletenote } from '../reducer/noteApp';
 import Header from '../component/Header';
 
 const HomeScreen = ({navigation}) => {
 
-  const notes = useSelector(state => state)
+  const notes = useSelector(state => state.todos)
 
   const dispatch = useDispatch()
 
-  const addNote = note => {
-    console.log(note)
-    dispatch(addnote(note))
-  }
-  const deleteNote = id => dispatch(deletenote(id))
+  const deleteNote = id => {dispatch(deletenote(id))}
 
   const showAlert = (index) =>
     Alert.alert(
       index.note.noteTitle,
       index.note.noteDescription,
       [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "Delete", onPress: () => deleteNote(index.id) }
+        //{text: "Cancel",onPress: () => console.log(index.id),style: "cancel"},
+        {text: "Delete", onPress: () => deleteNote(index.id) },
+        {text: "Edit", onPress: () => navigation.navigate('EditScreen', {this_note: index})}
       ]
     );
 
@@ -58,11 +51,11 @@ const HomeScreen = ({navigation}) => {
           )}
         keyExtractor={item => item.id.toString()}
         />
-          
-        )
-      }
+      )
+        }
+        
 
-        <TouchableOpacity onPress={() => navigation.navigate('AddScreen', {addNote})}>
+        <TouchableOpacity onPress={() => navigation.navigate('AddScreen')}>
           <View style={styles.addbutton}>
             <Text style={{color: 'black', fontSize: 20}}>+ Add a note here!</Text>
           </View>

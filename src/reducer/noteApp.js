@@ -1,6 +1,7 @@
 import remove from 'lodash.remove'
 export const ADD_NOTE = 'ADD_NOTE'
 export const DELETE_NOTE = 'DELETE_NOTE'
+export const EDIT_NOTE = 'EDIT_NOTE'
 
 let noteID = 0
 
@@ -19,16 +20,38 @@ export function deletenote(id){
     }
 }
 
-const initialState = []
+export function editnote(obj){
+    return {
+        type: EDIT_NOTE, 
+        payload: obj
+    }
+}
+
+export const initialState = {
+    todos: []
+}
 
 export default function noteReducer(state = initialState, action){
     switch(action.type){
         case ADD_NOTE: 
-            return [...state,{id: action.id, note: action.note}]
+            return {
+                ...state,
+                todos: [ ...state.todos, { id: action.id, note: action.note }]
+             }
         case DELETE_NOTE:
-            const del = remove(state, obj => {return obj.id!=action.payload})
-            return del
+            const del = remove(state.todos, obj => {return obj.id!=action.payload })
+            return {
+                ...state,
+                todos: del
+            }
+        case EDIT_NOTE:
+            const edi = state.todos.map(x => (x.id === action.payload.id ? action.payload : x));
+            console.log(edi)
+            return {
+                ...state,
+                todos: edi
+            }
         default:
-            return state 
+            return state
     }
 }
